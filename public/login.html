@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+   <header>
+        <!-- Ferramenta de inclusão-->
+        <script type="text/javascript">
+            var _userway_config = {
+            account: 'IXIpS4aC3h'
+            };
+            </script>
+            <script type="text/javascript" src="https://cdn.userway.org/widget.js"></script>
+        <!-- fim da ferramenta -->
+
+
+            <!-- Imagem logo -->
+    <img id="logo" src="img/logo.png" alt="">
+           <!-- fim da Imagem logo -->
+   </header>
+
+    <div class="card">
+        <!-- onsubmit ele submete os valores de verdadeiro ou falso do meu script  -->
+        <form class="box" id="form_login" method="post" onsubmit="return entrar()">
+            <h1> LOGIN </h1>
+            
+           <input type="text"  id="nome" name="login" placeholder="E-mail" required>
+           <input type="password" id="senha" name="senha"placeholder="Senha" required>
+           <h3> <a href="Cadastro.html"> Cadastre-se</a></h3> 
+           <h4> <a href="index.html"> voltar</a></h4> 
+
+           <button id="btn_entrar" type="submit">Entrar</button>
+         </form>
+     
+         <img src="img/aguarde.gif"  id="img_aguarde" style="display: none;">
+         <!-- <h4 >Verifique se os dados foram preenchidos corretamente</h4> -->
+     
+         <div id="div_erro" style="background-color: sandybrown; color: maroon; display: none;">
+     
+         </div>
+
+
+
+</body>
+</html>
+<script>
+    function entrar() {
+        aguardar();
+        var formulario = new URLSearchParams(new FormData(form_login));
+        fetch("/usuarios/autenticar", {
+            method: "POST",
+            body: formulario
+        }).then(resposta => {
+
+            if (resposta.ok) {
+
+                resposta.json().then(json => {
+
+                    sessionStorage.login_usuario_meuapp = json.Login;
+                    sessionStorage.nome_usuario_meuapp = json.Nome;
+
+                    window.location.href = 'usuario.html';
+                });
+
+            } else {
+
+                console.log('Erro de login!');
+
+                response.text().then(texto => {
+                    console.error(texto);
+                    finalizar_aguardar(texto);
+                });
+            }
+        });
+
+        return false;
+    }
+
+    function aguardar() {
+        btn_entrar.disabled = true;
+        img_aguarde.style.display = 'block';
+        div_erro.style.display = 'none';
+    }
+
+    function finalizar_aguardar(resposta) {
+        btn_entrar.disabled = false;
+        img_aguarde.style.display = 'none';
+        div_erro.style.display = 'block';
+        div_erro.innerHTML = resposta;
+    }
+
+</script>
